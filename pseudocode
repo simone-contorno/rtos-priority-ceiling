@@ -1,0 +1,84 @@
+Real-Time Operating Systems
+4 threads managed with Semaphores (Priority Ceiling Policy)
+
+PSEUDO-CODE by Simone Contorno
+
+FUNCTION main 
+    SET threads priority (lower period, higher priority)
+    COMPUTE WCET for each task.
+    COMPUTE U and Ulub
+    CHECK schedulability
+    SET attributes of each task
+    COMPUTE next arrival time of each task
+    CREATE threads
+    WAIT for thread 1
+END 
+
+FUNCTION task 1
+    WRITE into T1T2
+    WRITE into T1T4
+END
+
+FUNCTION thread 1
+    LOCK semaphore 1
+    LOCK semaphore 2
+
+    FOR number of executions
+        CALL task 1
+        WAIT for thread 2
+        WAIT for thread 4
+        SLEEP until the next arrival time
+        COMPUTE next arrival time
+    ENDFOR 
+
+    UNLOCK semaphore 1
+    UNLOCK semaphore 2
+END
+
+FUNCTION task 2
+    READ from T1T2
+    WRITE into T2T3
+END
+
+FUNCTION thread 2
+    LOCK semaphore 3
+
+    FOR number of executions
+        TAKE semaphore 1
+        CALL task 2
+        SLEEP until the next arrival time
+        COMPUTE next arrival time
+        SIGNAL to thread 1
+        WAIT for thread 3
+    ENDFOR 
+
+    UNLOCK semaphore 3
+END
+
+FUNCTION task 3
+    READ from T2T3
+END
+
+FUNCTION thread 3
+    FOR number of executions
+        TAKE semaphore 3
+        CALL task 3
+        SLEEP until the next arrival time
+        COMPUTE next arrival time
+        SIGNAL to thread 2
+    ENDFOR 
+END
+
+FUNCTION task 4
+    READ from T1T4
+END
+
+FUNCTION thread 4
+    FOR number of executions
+        TAKE semaphore 2
+        CALL task 4
+        SLEEP until the next arrival time
+        COMPUTE next arrival time
+        SIGNAL to thread 1
+    ENDFOR 
+END
