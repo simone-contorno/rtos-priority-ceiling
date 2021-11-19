@@ -1,4 +1,4 @@
-# Reat-Time Operating Systems
+# Real-Time Operating Systems
 ## 4 threads managed with semaphores (Priority Ceiling Policy)
 
 <br><br>
