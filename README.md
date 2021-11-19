@@ -18,7 +18,7 @@ How install and run this program on Linux.<br>
 
 ### Conclusion
 Conclusion.<br>
-[Go to Counclusion](#conclusion)
+[Go to Couclusion](#conclusion)
 
 <a name="intro"></a>
 ### Introduction
@@ -41,27 +41,48 @@ To do this, the following steps have been followed:
     <li>Check if the schedulability if feasible or not computing the 
     Utilization factor (U) and the Utilization factor lower upper bound
     (Ulub).</li>
-    <li>Set attributes (incliding scheduling policy and priority) of each
-    task.</li>
+    <li>Set attributes (including scheduling policy and priority) of each task.</li>
+    <li>Set attributes (including Priority Ceiling) of each semaphore.</li>
     <li>Compute the next arrival time of each task.</li>
-    <li>Create thread and wait for the first one.</li>
-    <li>When the first thread terminated, print missed deadlines of each
-    task and terminate.</li>
+    <li>Create thread and wait for the first one and the second one.</li>
+    <li>When these terminates, print missed deadlines of each task and terminate the program.</li>
 </ul>
 
-Now, let's notice what each Thread do:
+Now, let's notice what each Thread does:
 <ul>
-    <li>Tread 1: executes the first task that take the first and the second semaphore for all the time; write into the variables; wait for the second and the fourth threads. When all the executions are finished, it unlock the two semaphores and terminates.</li>
-    <li>Thread 2: executes the second task that take the third sempahore for all the time; take the first semaphore when the first thread are waiting a signal to take again the control; read the variable e write into another one; send the signal to the first thread; wait for the third thread. When all the execution are finished, it unlock the
-    third semaphore and terminates.</li>
-    <li>Thread 3: executes the third task that take the third semaphore when the second thread are waiting a signal to take again the control;
-    read the variable; send the signal to the second thread. When all the
-    executions are finished, it terminates.</li>
-    <li>Thread 4: executes the fourth task that take the second semaphore when the first thread are waiting a signal to take again the control;
-    read the variable; send the signal to the first thread. When all the
-    executions are finished, it terminates.</li>
+    <li>Tread 1: 
+        <ul>
+            <li>Lock the first and the second semaphores;</li>
+            <li>Executes the first task that write into the variables T1T2 and T1T4;</li>
+            <li>Unlock the two semaphores;</li>
+            <li>Sleep until the next arrival time and compute the next one.</li>
+        </ul>
+    </li>
+    <li>Tread 2: 
+        <ul>
+            <li>Lock the third semaphore;</li>
+            <li>Executes the second task that read from T1T2 and write into the variable T2T3;</li>
+            <li>Unlock the semaphore;</li>
+            <li>Sleep until the next arrival time and compute the next one.</li>
+        </ul>
+    </li>
+    <li>Tread 3: 
+        <ul>
+            <li>Lock the third semaphore;</li>
+            <li>Executes the third task that read from T2T3;</li>
+            <li>Unlock the semaphore;</li>
+            <li>Sleep until the next arrival time and compute the next one.</li>
+        </ul>
+    </li>
+    <li>Tread 4: 
+        <ul>
+            <li>Lock the second semaphore;</li>
+            <li>Executes the fourth task that read from T1T4;</li>
+            <li>Unlock the semaphore;</li>
+            <li>Sleep until the next arrival time and compute the next one.</li>
+        </ul>
+    </li>
 </ul>
-All threads sleep until the next arrival time and compute the next one.
 
 <a name="installation"></a>
 ### Installation and Execution

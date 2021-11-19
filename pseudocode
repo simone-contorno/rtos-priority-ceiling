@@ -9,76 +9,68 @@ FUNCTION main
     COMPUTE U and Ulub
     CHECK schedulability
     SET attributes of each task
+    SET Priority Ceiling to the Semaphores
     COMPUTE next arrival time of each task
     CREATE threads
-    WAIT for thread 1
+    WAIT for thread1 and thread2
 END 
 
-FUNCTION task 1
+FUNCTION task1
     WRITE into T1T2
     WRITE into T1T4
 END
 
-FUNCTION thread 1
-    LOCK semaphore 1
-    LOCK semaphore 2
-
+FUNCTION thread1
     FOR number of executions
-        CALL task 1
-        WAIT for thread 2
-        WAIT for thread 4
+        LOCK mutex1
+        LOCK mutex2
+        CALL task1
+        UNLOCK mutex2
+        UNLOCK mutex1
         SLEEP until the next arrival time
         COMPUTE next arrival time
     ENDFOR 
-
-    UNLOCK semaphore 1
-    UNLOCK semaphore 2
 END
 
-FUNCTION task 2
+FUNCTION task2
     READ from T1T2
     WRITE into T2T3
 END
 
-FUNCTION thread 2
-    LOCK semaphore 3
-
+FUNCTION thread2
     FOR number of executions
-        TAKE semaphore 1
-        CALL task 2
+        LOCK mutex3
+        CALL task2
+        UNLOCK mutex3
         SLEEP until the next arrival time
         COMPUTE next arrival time
-        SIGNAL to thread 1
-        WAIT for thread 3
     ENDFOR 
-
-    UNLOCK semaphore 3
 END
 
-FUNCTION task 3
+FUNCTION task3
     READ from T2T3
 END
 
-FUNCTION thread 3
+FUNCTION thread3
     FOR number of executions
-        TAKE semaphore 3
-        CALL task 3
+        LOCK mutex3
+        CALL task3
+        UNLOCK mutex3
         SLEEP until the next arrival time
         COMPUTE next arrival time
-        SIGNAL to thread 2
     ENDFOR 
 END
 
-FUNCTION task 4
+FUNCTION task4
     READ from T1T4
 END
 
-FUNCTION thread 4
+FUNCTION thread4
     FOR number of executions
-        TAKE semaphore 2
-        CALL task 4
+        LOCK mutex2
+        CALL task4
+        UNLOCK mutex2
         SLEEP until the next arrival time
         COMPUTE next arrival time
-        SIGNAL to thread 1
     ENDFOR 
 END
