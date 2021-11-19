@@ -18,16 +18,16 @@ How install and run this program on Linux.<br>
 
 ### Conclusion
 Conclusion.<br>
-[Go to Couclusion](#con)
+[Go to Couclusion](#conclusion)
 
 <a name="intro"></a>
 ### Introduction
 
 This program manage 4 threads, using semaphores and Priority Ceiling Policy, in order to:
 <ul>
-    <li>Task 1 write something into a variable, Task 2 read from this one.</li>
-    <li>Task 1 write something into a variable, Task 4 read from this one.</li>
-    <li>Task 2 write something into a variable, Task 3 read from this one.</li>
+    <li>Task 1 write something into the variable T1T2, Task 2 read from this one.</li>
+    <li>Task 1 write something into the variable T1T4, Task 4 read from this one.</li>
+    <li>Task 2 write something into the variable T2T3, Task 3 read from this one.</li>
 </ul>
 
 <a name="how"></a>
@@ -103,7 +103,7 @@ Now, to run 'rtos_priority_ceiling' type:
     </code>
 </pre>
 
-<a name="con"></a>
+<a name="conclusion"></a>
 ### Conclusion
 
 Thanks to have read this file, i hope it was clear and interesting.
