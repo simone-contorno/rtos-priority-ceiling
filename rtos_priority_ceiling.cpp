@@ -1,9 +1,9 @@
 /*
-	Real-Time Operationg Systems
-	4 threads managed with Semaphores (Priority Ceiling Policy)
-
-	by Simone Contorno
-*/
+ * Real-Time Operationg Systems
+ * 4 threads managed with Semaphores (Priority Ceiling Policy)
+ *
+ * by Simone Contorno
+ */
 
 /*
  * NOTE: if you want to try the Priority Ceiling effect on the scheduling:
