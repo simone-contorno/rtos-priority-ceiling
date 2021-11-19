@@ -91,7 +91,7 @@ Download the repository:
 
 <pre>
     <code>
-        git clone https://github.com/simone-contorno/rtos_priority_ceiling
+        git clone https://github.com/simone-contorno/RTOS-Priority-Ceiling
     </code>
 </pre>
 
