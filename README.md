@@ -44,7 +44,7 @@ To do this, the following steps have been followed:
     <li>Set attributes (including scheduling policy and priority) of each task.</li>
     <li>Set attributes (including Priority Ceiling) of each semaphore.</li>
     <li>Compute the next arrival time of each task.</li>
-    <li>Create thread and wait for the first one and the second one.</li>
+    <li>Create threads and wait for all of them.</li>
     <li>When these terminates, print missed deadlines of each task and terminate the program.</li>
 </ul>
 

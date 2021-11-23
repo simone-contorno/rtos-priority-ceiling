@@ -196,18 +196,8 @@ int main() {
 	iret[3] = pthread_create(&(thread_id[3]), &(attributes[3]), task4, NULL);
 
   	// Join all threads
-	//for (int i = 0; i < NTASKS; i++)
-		//pthread_join(thread_id[i], NULL);
-
-	/*
-	 * Join ONLY the first and the second threads
-	 * WHY? Because they write into the shared resources, while the other 2
-	 * threads just read; so, if the first one and the second one are termined,
-	 * the value into the shared resources does not change and continue to 
-	 * read the same value has not sense.
-	 */
-	pthread_join(thread_id[0], NULL);
-	pthread_join(thread_id[1], NULL);
+	for (int i = 0; i < NTASKS; i++)
+		pthread_join(thread_id[i], NULL);
 
   	// Print deadlines values
   	for (int i = 0; i < NTASKS; i++) {

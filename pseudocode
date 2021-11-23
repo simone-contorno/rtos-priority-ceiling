@@ -12,7 +12,8 @@ FUNCTION main
     SET Priority Ceiling to the Semaphores
     COMPUTE next arrival time of each task
     CREATE threads
-    WAIT for thread1 and thread2
+    WAIT for all threads
+    PRINT missed deadlines for each thread
 END 
 
 FUNCTION task1
