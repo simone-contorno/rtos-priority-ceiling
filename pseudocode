@@ -41,7 +41,9 @@ END
 FUNCTION thread2
     FOR number of executions
         LOCK mutex3
+        LOCK mutex1
         CALL task2
+        UNLOCK mutex1
         UNLOCK mutex3
         SLEEP until the next arrival time
         COMPUTE next arrival time

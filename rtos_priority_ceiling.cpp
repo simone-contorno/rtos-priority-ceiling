@@ -7,7 +7,7 @@
 
 /*
  * NOTE: if you want to try the Priority Ceiling effect on the scheduling:
- * 1) Uncomment the lines 244, 245, 247, 287, 289. (Try to produce a deadlock)
+ * 1) Uncomment the lines 234, 235, 237. (Try to produce a deadlock)
  * 2) Run exec.sh: you will not see notice any deadlock. (Because Priority Ceiling is set)
  * 3) Comment lines from 160 to 170. (Remove Priority Ceiling Policy)
  * 4) Run exec.sh: a deadlock will be produce (if it will not occur try to increase the value of nsleep() at line 245).
@@ -274,9 +274,9 @@ void *task2(void *ptr ) {
   	for (int i = 0; i < NEXEC; i++) {
         // Go into the critical section protected by mutex 2 and execute task 2
 		pthread_mutex_lock(&mutex3); 
-		//pthread_mutex_lock(&mutex1); 
+		pthread_mutex_lock(&mutex1); 
 		task2_code();
-		//pthread_mutex_unlock(&mutex1); 
+		pthread_mutex_unlock(&mutex1); 
 		pthread_mutex_unlock(&mutex3); 
 
 		// Declare time variables and get time
