@@ -60,9 +60,9 @@ Now, let's notice what each Thread does:
     </li>
     <li>Tread 2: 
         <ul>
-            <li>Lock the third semaphore;</li>
+            <li>Lock the first and the third semaphores;</li>
             <li>Executes the second task that read from T1T2 and write into the variable T2T3;</li>
-            <li>Unlock the semaphore;</li>
+            <li>Unlock the semaphores;</li>
             <li>Sleep until the next arrival time and compute the next one.</li>
         </ul>
     </li>
