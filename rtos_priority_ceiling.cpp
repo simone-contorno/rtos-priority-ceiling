@@ -7,9 +7,9 @@
 
 /*
  * NOTE: if you want to try the Priority Ceiling effect on the scheduling:
- * 1) Uncomment the lines 234, 235, 237. (Try to produce a deadlock)
+ * 1) Uncomment the lines 233, 234, 236. (Try to produce a deadlock)
  * 2) Run exec.sh: you will not see notice any deadlock. (Because Priority Ceiling is set)
- * 3) Comment lines from 160 to 170. (Remove Priority Ceiling Policy)
+ * 3) Comment lines from 159 to 169. (Remove Priority Ceiling Policy)
  * 4) Run exec.sh: a deadlock will be produce (if it will not occur try to increase the value of nsleep() at line 245).
  */
 
@@ -92,19 +92,18 @@ int main() {
 		WCET[i] = 0; 
 		for (int j = 0; j < NEXEC; j++) {
 			// Declare time variables
-			struct timeval timeval1, timeval2;
-			struct timezone timezone1, timezone2;
-
+			struct timespec time_1, time_2;
+		
 			// Execute the task to estimate its WCET
-			gettimeofday(&timeval1, &timezone1);
+			clock_gettime(CLOCK_REALTIME, &time_1);
 			if (i == 0) task1_code();
 			if (i == 1) task2_code();
 			if (i == 2) task3_code();
 			if (i == 3) task4_code();
-			gettimeofday(&timeval2, &timezone2);
+			clock_gettime(CLOCK_REALTIME, &time_2);
 			
 			// Compute the Worst Case Execution Time 
-			double WCET_temp = ((timeval2.tv_usec - timeval1.tv_usec) * 1000 + (timeval2.tv_usec - timeval1.tv_usec) * 1000);
+			double WCET_temp = 1000000000 * (time_2.tv_sec - time_1.tv_sec) + (time_2.tv_nsec-time_1.tv_nsec);
 			if (WCET_temp > WCET[i]) 
 				WCET[i] = WCET_temp; 
 		}
@@ -228,7 +227,7 @@ void *task1(void *ptr) {
 	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cset);
 
 	for (int i = 0; i < NEXEC; i++) {	
-        // Go into the critical section protected by mutex 1 and execute task 1
+        // Go into the critical sections protected by mutex 1 and execute task 1
 		pthread_mutex_lock(&mutex1); 
 		pthread_mutex_lock(&mutex2);
 		//usleep(5);
@@ -239,12 +238,11 @@ void *task1(void *ptr) {
 		pthread_mutex_unlock(&mutex1); 
 
 		// Declare time variables and get time
-        struct timeval hour;
-		struct timezone zone;
-		gettimeofday(&hour, &zone);
+        struct timespec time;
+		clock_gettime(CLOCK_REALTIME, &time);
 
 		// After execution, compute the time before the next period starts
-		long int timetowait = 1000 * ((next_arrival_time[0].tv_sec - hour.tv_sec) * 1000000 + (next_arrival_time[0].tv_sec - hour.tv_sec) * 1000000);
+		long int timetowait = 1000 * ((next_arrival_time[0].tv_sec - time.tv_sec) * 1000000 + (next_arrival_time[0].tv_sec - time.tv_sec) * 1000000);
 		if (timetowait < 0) missed_deadlines[0]++;
 
 		// Sleep until the next arrival time and compute the next one
@@ -263,7 +261,7 @@ void task2_code() {
 	printf("%i (W)\n", T2T3); fflush(stdout);
 }
 
-// Thread 2 - Use mutex3
+// Thread 2 - Use mutex3 and mutex1
 void *task2(void *ptr ) {
 	// Set thread affinity
 	cpu_set_t cset;
@@ -272,7 +270,7 @@ void *task2(void *ptr ) {
 	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cset);
 
   	for (int i = 0; i < NEXEC; i++) {
-        // Go into the critical section protected by mutex 2 and execute task 2
+        // Go into the critical sections protected by mutex 2 and execute task 2
 		pthread_mutex_lock(&mutex3); 
 		pthread_mutex_lock(&mutex1); 
 		task2_code();
@@ -280,12 +278,11 @@ void *task2(void *ptr ) {
 		pthread_mutex_unlock(&mutex3); 
 
 		// Declare time variables and get time
-        struct timeval hour;
-		struct timezone zone;
-		gettimeofday(&hour, &zone);
+        struct timespec time;
+		clock_gettime(CLOCK_REALTIME, &time);
 
 		// After execution, compute the time before the next period starts
-		long int timetowait = 1000 * ((next_arrival_time[1].tv_sec - hour.tv_sec) * 1000000 + (next_arrival_time[1].tv_sec - hour.tv_sec) * 1000000);
+		long int timetowait = 1000 * ((next_arrival_time[1].tv_sec - time.tv_sec) * 1000000 + (next_arrival_time[1].tv_sec - time.tv_sec) * 1000000);
 		if (timetowait < 0) missed_deadlines[1]++;
 
 		// Sleep until the next arrival time and compute the next one
@@ -317,12 +314,11 @@ void *task3(void *ptr) {
         pthread_mutex_unlock(&mutex3);
 
 		// Declare time variables and get time
-        struct timeval hour;
-		struct timezone zone;
-		gettimeofday(&hour, &zone);
+        struct timespec time;
+		clock_gettime(CLOCK_REALTIME, &time);
 
 		// After execution, compute the time before the next period starts
-		long int timetowait = 1000 * ((next_arrival_time[2].tv_sec - hour.tv_sec) * 1000000 + (next_arrival_time[2].tv_sec - hour.tv_sec) * 1000000);
+		long int timetowait = 1000 * ((next_arrival_time[2].tv_sec - time.tv_sec) * 1000000 + (next_arrival_time[2].tv_sec - time.tv_sec) * 1000000);
 		if (timetowait < 0) missed_deadlines[2]++;
 
 		// Sleep until the next arrival time and compute the next one
@@ -354,12 +350,11 @@ void *task4(void *ptr) {
 		pthread_mutex_unlock(&mutex2); 
 
 		// Declare time variables and get time
-		struct timeval hour;
-		struct timezone zone;
-		gettimeofday(&hour, &zone);
+		struct timespec time;
+		clock_gettime(CLOCK_REALTIME, &time);
 
 		// After execution, compute the time before the next period starts
-		long int timetowait = 1000 * ((next_arrival_time[3].tv_sec - hour.tv_sec) * 1000000 + (next_arrival_time[3].tv_sec - hour.tv_sec) * 1000000);
+		long int timetowait = 1000 * ((next_arrival_time[3].tv_sec - time.tv_sec) * 1000000 + (next_arrival_time[3].tv_sec - time.tv_sec) * 1000000);
 		if (timetowait < 0) missed_deadlines[3]++;
 		
 		// Sleep until the next arrival time and compute the next one
