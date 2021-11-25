@@ -18,7 +18,7 @@ How install and run this program on Linux.<br>
 
 ### Conclusion
 Conclusion.<br>
-[Go to Couclusion](#conclusion)
+[Go to Conclusion](#con)
 
 <a name="intro"></a>
 ### Introduction
@@ -103,7 +103,7 @@ Now, to run 'rtos_priority_ceiling' type:
     </code>
 </pre>
 
-<a name="conclusion"></a>
+<a name="con"></a>
 ### Conclusion
 
 Thanks to have read this file, i hope it was clear and interesting.
