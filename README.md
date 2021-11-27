@@ -18,16 +18,16 @@ How install and run this program on Linux.<br>
 
 ### Conclusion
 Conclusion.<br>
-[Go to Conclusion](#con)
+[Go to Couclusion](#conclusion)
 
 <a name="intro"></a>
 ### Introduction
 
 This program manage 4 threads, using semaphores and Priority Ceiling Policy, in order to:
 <ul>
-    <li>Task 1 write something into the variable T1T2, Task 2 read from this one.</li>
-    <li>Task 1 write something into the variable T1T4, Task 4 read from this one.</li>
-    <li>Task 2 write something into the variable T2T3, Task 3 read from this one.</li>
+    <li>Task 1_1 write something into the variable T1T2, Task 2_1 read from this one.</li>
+    <li>Task 1_2 write something into the variable T1T4, Task 4 read from this one.</li>
+    <li>Task 2_2 write something into the variable T2T3, Task 3 read from this one.</li>
 </ul>
 
 <a name="how"></a>
@@ -38,6 +38,7 @@ To do this, the following steps have been followed:
     <li>Set the thread with the lowest period as the first one and the
     thread with the highest period as the last one.</li>
     <li>Compute the WCET (Worst Case Execution Time) for each task.</li>
+    <li>Compute the Blocking Time for each task.</li>
     <li>Check if the schedulability if feasible or not computing the 
     Utilization factor (U) and the Utilization factor lower upper bound
     (Ulub).</li>
@@ -52,33 +53,27 @@ Now, let's notice what each Thread does:
 <ul>
     <li>Tread 1: 
         <ul>
-            <li>Lock the first and the second semaphores;</li>
-            <li>Executes the first task that write into the variables T1T2 and T1T4;</li>
-            <li>Unlock the two semaphores;</li>
+            <li>Lock the first semaphore, execute Task 1_1 and unlock the semaphore;</li>
+            <li>Lock the second semaphore, execute Task 1_2 and unlock the semaphore;</li>
             <li>Sleep until the next arrival time and compute the next one.</li>
         </ul>
     </li>
     <li>Tread 2: 
         <ul>
-            <li>Lock the first and the third semaphores;</li>
-            <li>Executes the second task that read from T1T2 and write into the variable T2T3;</li>
-            <li>Unlock the semaphores;</li>
+            <li>Lock the third semaphore, execute Task 2_2 and unlock the semaphore;</li>
+            <li>Lock the first semaphore, execute Task 2_1 and unlock the semaphore;</li>
             <li>Sleep until the next arrival time and compute the next one.</li>
         </ul>
     </li>
     <li>Tread 3: 
         <ul>
-            <li>Lock the third semaphore;</li>
-            <li>Executes the third task that read from T2T3;</li>
-            <li>Unlock the semaphore;</li>
+            <li>Lock the third semaphore, execute Task 3 and unlock the semaphore;</li>
             <li>Sleep until the next arrival time and compute the next one.</li>
         </ul>
     </li>
     <li>Tread 4: 
         <ul>
-            <li>Lock the second semaphore;</li>
-            <li>Executes the fourth task that read from T1T4;</li>
-            <li>Unlock the semaphore;</li>
+            <li>Lock the second semaphore, execute Task 4 and unlock the semaphore;</li>
             <li>Sleep until the next arrival time and compute the next one.</li>
         </ul>
     </li>
@@ -103,7 +98,7 @@ Now, to run 'rtos_priority_ceiling' type:
     </code>
 </pre>
 
-<a name="con"></a>
+<a name="conclusion"></a>
 ### Conclusion
 
 Thanks to have read this file, i hope it was clear and interesting.

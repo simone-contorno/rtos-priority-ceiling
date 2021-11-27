@@ -5,7 +5,8 @@ PSEUDO-CODE by Simone Contorno
 
 FUNCTION main 
     SET threads priority (lower period, higher priority)
-    COMPUTE WCET for each task.
+    COMPUTE WCET for each task
+    COMPUTE Blocking Time for each task
     COMPUTE U and Ulub
     CHECK schedulability
     SET attributes of each task
@@ -16,35 +17,43 @@ FUNCTION main
     PRINT missed deadlines for each thread
 END 
 
-FUNCTION task1
+FUNCTION task1_1
     WRITE into T1T2
+END
+
+FUNCTION task1_2
     WRITE into T1T4
 END
 
 FUNCTION thread1
     FOR number of executions
         LOCK mutex1
-        LOCK mutex2
-        CALL task1
-        UNLOCK mutex2
+        CALL task1_1
         UNLOCK mutex1
+        LOCK mutex2
+        CALL task1_2
+        UNLOCK mutex2
         SLEEP until the next arrival time
         COMPUTE next arrival time
     ENDFOR 
 END
 
-FUNCTION task2
+FUNCTION task2_1
     READ from T1T2
+END
+
+FUNCTION task2_2
     WRITE into T2T3
 END
 
 FUNCTION thread2
     FOR number of executions
         LOCK mutex3
-        LOCK mutex1
-        CALL task2
-        UNLOCK mutex1
+        CALL task2_2
         UNLOCK mutex3
+        LOCK mutex1
+        CALL task2_1
+        UNLOCK mutex1
         SLEEP until the next arrival time
         COMPUTE next arrival time
     ENDFOR 
