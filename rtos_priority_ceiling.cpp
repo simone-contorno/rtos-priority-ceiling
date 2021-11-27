@@ -5,14 +5,6 @@
  * by Simone Contorno
  */
 
-/*
- * NOTE: if you want to try the Priority Ceiling effect on the scheduling:
- * 1) Uncomment the lines 233, 234, 236. (Try to produce a deadlock)
- * 2) Run exec.sh: you will not see notice any deadlock. (Because Priority Ceiling is set)
- * 3) Comment lines from 159 to 169. (Remove Priority Ceiling Policy)
- * 4) Run exec.sh: a deadlock will be produce (if it will not occur try to increase the value of nsleep() at line 245).
- */
-
 // Required headers 
 #include <pthread.h>
 #include <stdio.h>
@@ -23,8 +15,10 @@
 #include <sys/types.h>
 
 // The code to be executed by each task 
-void task1_code();
-void task2_code();
+void task1_1_code();
+void task1_2_code();
+void task2_1_code();
+void task2_2_code();
 void task3_code();
 void task4_code();
 
@@ -35,7 +29,7 @@ void *task3(void *);
 void *task4(void *);
 
 // Constants
-#define NEXEC 100 // Change this value to decrease or increase the number of execution for each task
+#define NEXEC 30 // Change this value to decrease or increase the number of execution for each task
 #define NPERIODICTASKS 4
 #define NAPERIODICTASKS 0
 #define NTASKS NPERIODICTASKS + NAPERIODICTASKS
@@ -96,8 +90,14 @@ int main() {
 		
 			// Execute the task to estimate its WCET
 			clock_gettime(CLOCK_REALTIME, &time_1);
-			if (i == 0) task1_code();
-			if (i == 1) task2_code();
+			if (i == 0) {
+				task1_1_code();
+				task1_2_code();
+			}
+			if (i == 1) {
+				task2_1_code();
+				task2_2_code();
+			}
 			if (i == 2) task3_code();
 			if (i == 3) task4_code();
 			clock_gettime(CLOCK_REALTIME, &time_2);
@@ -109,28 +109,100 @@ int main() {
 		}
     }
 
+	counter = 1; // Reset counter
+
+	double BWCET[NTASKS];
+	double B[NTASKS];
+
+	// Compute the blocking time for thread 1
+	for (int i = 0; i < NTASKS; i++) {
+		for (int j = 0; j < NEXEC; j++) {
+			// Declare time variables
+			struct timespec time_1, time_2;
+		
+			// Execute the task to estimate its WCET
+			clock_gettime(CLOCK_REALTIME, &time_1);
+			if (i == 0) task2_1_code(); // Thread 1
+			if (i == 1 or i == 2) task4_code(); // Thread 1 and Thread 2
+			if (i == 3) task3_code(); // Thread 2
+			clock_gettime(CLOCK_REALTIME, &time_2);
+			
+			// Compute the Worst Case Execution Time 
+			double BWCET_temp = 1000000000 * (time_2.tv_sec - time_1.tv_sec) + (time_2.tv_nsec-time_1.tv_nsec);
+			if (BWCET_temp > BWCET[i]) 
+				BWCET[i] = BWCET_temp; 
+		}
+	}
+	// Assign the worst case for each thread
+	if (BWCET[0] > BWCET[1])
+		B[0] = BWCET[0];
+	else 
+		B[0] = BWCET[1];
+	if (BWCET[2] > BWCET[3])
+		B[1] = BWCET[2];
+	else 
+		B[1] = BWCET[3];
+	B[2] = WCET[3];
+	B[3] = 0;
+
 	// Clear the console
 	system("clear");
 
-	// Print all WCET
-	for (int i = 0; i < NTASKS; i++)
-		printf("Worst Case Execution Time %i = %f [ns]\n", i+1, WCET[i]); fflush(stdout);
-
-	counter = 1; // Reset counter
-
-	// Compute U and check for schedulability
-	double U = 0;
-	for (int i = 0; i < NTASKS; i++) 
-		U += WCET[i] / periods[i];
-
-	double Ulub = NPERIODICTASKS * (pow(2.0,(1.0 / NPERIODICTASKS)) - 1);
-
-	// Check the sufficient conditions: if it is not satisfied, exit  
-	if (U > Ulub) {
-		printf("\nU = %lf \nUlub = %lf \nTask set not schedulable\n", U, Ulub); fflush(stdout);
-		return(-1);
+	// Print all Worst Case Execution Time
+	for (int i = 0; i < NTASKS; i++) {
+		printf("Worst Case Execution Time [%i] = %f [ns]\n", i+1, WCET[i]); 
+		fflush(stdout);
 	}
-	printf("\nU = %lf \nUlub = %lf \nTask set schedulable\n", U, Ulub); fflush(stdout);
+
+	printf("\n");
+	fflush(stdout);
+
+	// Print all Blocking time
+	for (int i = 0; i < NTASKS; i++) {
+		printf("Blocking time thread [%i] = %f\n", i+1, B[i]); 
+		fflush(stdout);
+	}
+
+	printf("\n");
+	fflush(stdout);
+
+	// Compute U, Ulub and check for schedulability
+	double U, Ulub;
+	int flag = 0;
+
+	for (int i = 0; i < NTASKS; i++) {
+		// Set to 0 U and Ulub
+		U = 0;
+		Ulub = 0;
+
+		// Compute U for thread i
+		for (int j = 0; j <= i; j++) {
+			U += WCET[j] / periods[j];
+		}
+		U += B[i] / periods[i];
+
+		// Compute Ulub for thread i
+		Ulub = (i+1) * (pow(2.0,(1.0 / (i+1))) - 1);
+
+		// Print the result
+		printf("[%i] U = %lf ; Ulub = %lf\n", i+1, U, Ulub); 
+		fflush(stdout);
+
+		// Check for schedulability
+		if (U > Ulub) {
+			flag = 1;
+			break;
+		}
+	}
+	
+	if (flag == 0) {
+		printf("--> Task set schedulable.\n"); 
+		fflush(stdout);
+	}
+	else {
+		printf("--> Task set not schedulable.\n"); 
+		fflush(stdout);
+	}
 
 	// Set the minimum priority to the current thread
   	if (getuid() == 0) 
@@ -149,7 +221,6 @@ int main() {
 
 		// Properly set the parameters to assign the priority inversely proportional to the period
 		parameters[i].sched_priority = priomin.sched_priority + NTASKS - i;
-		//printf("%i \n", priomin.sched_priority + NTASKS - i);
 
 		// Set the attributes and the parameters of the current thread
 		pthread_attr_setschedparam(&(attributes[i]), &(parameters[i]));
@@ -209,13 +280,18 @@ int main() {
   	return 0;
 }
 
-// Task 1 - Write into T1T2 and T1T4
-void task1_code() {
+// Task 1_1 - Write into T1T2 
+void task1_1_code() {
   	printf("\nExecution %i/%i:\n[1] --> ", counter, NEXEC); fflush(stdout);
 	T1T2 = rand() % 10;
-	T1T4 = rand() % 10;
-	printf("%i (W) --> %i (W)\n", T1T2, T1T4); fflush(stdout);
+	printf("%i (W)\n", T1T2); fflush(stdout);
 	counter++;
+}
+
+// Task 1_2 - Write into T1T4
+void task1_2_code() {
+	T1T4 = rand() % 10;
+	printf("[1] --> %i (W)\n", T1T4); fflush(stdout);
 }
 
 // Thread 1 - Use mutex1 and mutex2
@@ -227,16 +303,15 @@ void *task1(void *ptr) {
 	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cset);
 
 	for (int i = 0; i < NEXEC; i++) {	
-        // Go into the critical sections protected by mutex 1 and execute task 1
+        // Go into the critical sections protected by mutex 1 and execute task 1_1
 		pthread_mutex_lock(&mutex1); 
-		pthread_mutex_lock(&mutex2);
-		//usleep(5);
-		//pthread_mutex_lock(&mutex3); 
-		task1_code();
-		//pthread_mutex_unlock(&mutex3); 
-		pthread_mutex_unlock(&mutex2);
+		task1_1_code();
 		pthread_mutex_unlock(&mutex1); 
-
+		// Go into the critical sections protected by mutex 2 and execute task 1_2
+		pthread_mutex_lock(&mutex2);
+		task1_2_code();
+		pthread_mutex_unlock(&mutex2);
+		
 		// Declare time variables and get time
         struct timespec time;
 		clock_gettime(CLOCK_REALTIME, &time);
@@ -254,11 +329,15 @@ void *task1(void *ptr) {
 	return 0;
 }
 
-// Task 2 - Read from T1T2 and write into T2T3
-void task2_code() {
-	printf("[2] --> %i (R) --> ", T1T2); fflush(stdout);
+// Task 2_1 - Read from T1T2
+void task2_1_code() {
+	printf("[2] --> %i (R)\n", T1T2); fflush(stdout);
+}
+
+// Task 2_2 - Write into T2T3
+void task2_2_code() {
 	T2T3 = rand() % 10;
-	printf("%i (W)\n", T2T3); fflush(stdout);
+	printf("[2] --> %i (W)\n", T2T3); fflush(stdout);
 }
 
 // Thread 2 - Use mutex3 and mutex1
@@ -270,13 +349,15 @@ void *task2(void *ptr ) {
 	pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cset);
 
   	for (int i = 0; i < NEXEC; i++) {
-        // Go into the critical sections protected by mutex 2 and execute task 2
+		// Go into the critical sections protected by mutex 3 and execute task 2_2
 		pthread_mutex_lock(&mutex3); 
-		pthread_mutex_lock(&mutex1); 
-		task2_code();
-		pthread_mutex_unlock(&mutex1); 
+		task2_2_code();
 		pthread_mutex_unlock(&mutex3); 
-
+        // Go into the critical sections protected by mutex 1 and execute task 2_1
+		pthread_mutex_lock(&mutex1); 
+		task2_1_code();
+		pthread_mutex_unlock(&mutex1); 
+		
 		// Declare time variables and get time
         struct timespec time;
 		clock_gettime(CLOCK_REALTIME, &time);
