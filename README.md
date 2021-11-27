@@ -1,8 +1,9 @@
 # Real-Time Operating Systems
 ## 4 threads managed with semaphores (Priority Ceiling Policy)
 
-<br><br>
-Robotics Engineering - Simone Contorno<br>
+<br>
+
+### Robotics Engineering - Simone Contorno<br>
 
 ### Introduction
 An overview of this program function.<br>
