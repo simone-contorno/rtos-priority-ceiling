@@ -13,7 +13,7 @@ A rapid description of how the program works.<br>
 [Go to How it works](#how)
 
 ### Installation and Execution
-How install and run this program on Linux.<br>
+How install and run this program in Linux.<br>
 [Go to Installation and Execution](#installation)
 
 ### Conclusion
