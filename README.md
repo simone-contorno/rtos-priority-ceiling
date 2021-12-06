@@ -84,19 +84,11 @@ Now, let's notice what each Thread does:
 
 Download the repository:
 
-<pre>
-    <code>
-        git clone https://github.com/simone-contorno/RTOS-Priority-Ceiling
-    </code>
-</pre>
+<pre><code>git clone https://github.com/simone-contorno/RTOS-Priority-Ceiling</code></pre>
 
 Now, to run 'rtos_priority_ceiling' type:
 
-<pre>
-    <code>
-        ./exec.sh
-    </code>
-</pre>
+<pre><code>./exec.sh</code></pre>
 
 <a name="con"></a>
 ### Conclusion
