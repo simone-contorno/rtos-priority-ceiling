@@ -1,6 +1,6 @@
-# Real-Time Operating Systems
-## 4 threads managed with semaphores (Priority Ceiling Policy)
-### Robotics Engineering - Simone Contorno<br>
+# RTOS-Priority-Ceiling
+## Real Time Operating Systems - 4 threads managed with semaphores (Priority Ceiling Policy)
+### Author: Simone Contorno
 
 <br>
 
