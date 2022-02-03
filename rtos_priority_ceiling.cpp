@@ -353,7 +353,7 @@ void *task2(void *ptr ) {
 		pthread_mutex_lock(&mutex3); 
 		task2_2_code();
 		pthread_mutex_unlock(&mutex3); 
-        // Go into the critical sections protected by mutex 1 and execute task 2_1
+        	// Go into the critical sections protected by mutex 1 and execute task 2_1
 		pthread_mutex_lock(&mutex1); 
 		task2_1_code();
 		pthread_mutex_unlock(&mutex1); 
