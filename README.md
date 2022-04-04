@@ -1,6 +1,5 @@
-# RTOS-Priority-Ceiling
-## Real Time Operating Systems - 4 threads managed with semaphores (Priority Ceiling Policy)
-### Author: Simone Contorno
+# Real Time Operating Systems - 4 threads managed with semaphores (Priority Ceiling Policy)
+## Author: Simone Contorno
 
 <br>
 
@@ -84,7 +83,7 @@ Now, let's notice what each Thread does:
 
 Download the repository:
 
-<pre><code>git clone https://github.com/simone-contorno/RTOS-Priority-Ceiling</code></pre>
+<pre><code>git clone https://github.com/simone-contorno/rtos-priority-ceiling</code></pre>
 
 Now, to run 'rtos_priority_ceiling' type:
 
